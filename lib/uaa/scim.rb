@@ -152,6 +152,7 @@ class Scim
     self.skip_ssl_validation = options[:skip_ssl_validation]
     self.ssl_ca_file = options[:ssl_ca_file]
     self.ssl_cert_store = options[:ssl_cert_store]
+    self.timeout = options[:timeout] || 60
     @zone = options[:zone]
   end
 

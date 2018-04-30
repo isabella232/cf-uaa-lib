@@ -44,6 +44,23 @@ module CF::UAA
     Scim.new(target, admin_token_issuer.client_credentials_grant.auth_header, options.merge(:symbolize_keys => true))
   end
 
+  describe 'when UAA does not respond' do
+    let(:timeout) { 0.01 }
+    let(:scim) { Scim.new(@target, "", {:timeout => timeout}) }
+
+    before :all do
+      @target = 'http://10.255.255.1'
+    end
+
+    it 'times out the connection at the configured time' do
+      expect {
+        Timeout.timeout(timeout * 2) do
+          scim.get(:user, "admin")
+        end
+      }.to raise_error HTTPClient::TimeoutError
+    end
+  end
+
   if ENV['UAA_CLIENT_TARGET']
     describe 'UAA Integration:' do
 

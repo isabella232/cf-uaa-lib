@@ -48,7 +48,7 @@ module Http
 
   def self.included(base)
     base.class_eval do
-      attr_accessor :skip_ssl_validation, :ssl_ca_file, :ssl_cert_store, :zone
+      attr_accessor :skip_ssl_validation, :ssl_ca_file, :ssl_cert_store, :zone, :timeout
     end
   end
 
@@ -156,6 +156,10 @@ module Http
   def net_http_request(url, method, body, headers)
     uri = URI.parse(url)
     http = http_request(uri)
+    http.connect_timeout = timeout
+    http.send_timeout = timeout
+    http.receive_timeout = timeout
+
     headers['content-length'] = body.length.to_s if body
     case method
       when :get, :delete
